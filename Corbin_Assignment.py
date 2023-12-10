@@ -22,7 +22,7 @@ def decrypt_secret_message(encrypted_message, key):
 def write_file(file_path, content):
     with open(file_path, 'wb') as file:
         file.write(content)
-#Takes the file in binary write mode and writes the provided message to a file.
+ #Takes the file in binary write mode and writes the provided message to a file.
 
 def read_file(file_path):
     with open(file_path, 'rb') as file:
@@ -30,7 +30,7 @@ def read_file(file_path):
     return content
 #This is used for reading encrypted data from a file.
 
-def main():
+def main_function():
     parser = argparse.ArgumentParser(description='Encrypt/decrypt messages with the cryptography.fernet module.')
     parser.add_argument('--encrypt', action='store_true', help='Encrypt the message and write it to a file')
     parser.add_argument('--decrypt', action='store_true', help='Read the message from a file and decrypt it')
@@ -42,12 +42,19 @@ def main():
 #If --decrypt is specified, it should read an encrypted message from a file specified by --file and decrypt it using the key provided by --key.
 
     if args.encrypt:
-        message = input('Type a message to encrypt: ')
+        while True:
+            message = input('Type a message to encrypt: ')
+            if message.strip():  # Check if the message is not blank
+                break
+            else:
+                print('Message cannot be blank: Please try again!')
+
         encrypted_message, key = encrypt_secret_message(message)
         file_path = args.file or 'default_encrypted_message.txt'
         write_file(file_path, encrypted_message)
         print(f'Message has been encrypted and saved to {file_path}. Key: {key.hex()}')
 #If args is encrypt then it will ask for a message and file name to encrypt it with the key
+#If encrypt is blank the script will ask until value isn't blank
 
     elif args.decrypt:
         if not args.key:
@@ -60,10 +67,11 @@ def main():
         encrypted_message = read_file(file_path)
         decrypted_message = decrypt_secret_message(encrypted_message, key)
         print(f'The decrypted message from {file_path} is: {decrypted_message}')
+#This will print the decrypted message and where the file is located
 
     else:
         print('Please enter --encrypt or --decrypt. Thank you :)')
 #This will print if --encrypt or --decrypt is not specified
 
 if __name__ == '__main__':
-    main()
+    main_function()
